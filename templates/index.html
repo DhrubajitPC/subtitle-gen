@@ -1,0 +1,62 @@
+{{define "content"}}
+<div class="app-wrapper">
+    <header>
+        <h1>Subtitle Generator</h1>
+        <p>Upload a video to automatically generate subtitles.</p>
+    </header>
+
+    <div class="input-section">
+
+
+        <div class="upload-controls">
+            <form id="upload-form" hx-encoding="multipart/form-data" hx-post="/upload" hx-target="#video-container"
+                hx-indicator="#upload-progress-container">
+                <label class="file-upload-btn">
+                    <input type="file" name="videoFile" accept="video/*">
+                    <span>Select Video File</span>
+                </label>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        <div id="upload-progress-container" class="progress-container htmx-indicator">
+            <div id="upload-progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="upload-status" class="text-sm text-muted" style="display:none; text-align:center; margin-top:5px;">
+            Uploading... <span id="upload-percent">0%</span></div>
+    </div>
+
+    <script>
+        document.body.addEventListener('htmx:xhr:progress', function (evt) {
+            if (evt.detail.elt.id === 'upload-form') {
+                var percent = evt.detail.loaded / evt.detail.total * 100;
+                document.querySelector('#upload-progress-bar').style.width = percent + "%";
+                document.querySelector('#upload-percent').innerText = Math.round(percent) + "%";
+                document.querySelector('#upload-status').style.display = 'block';
+            }
+        });
+        document.body.addEventListener('htmx:afterRequest', function (evt) {
+            if (evt.detail.elt.id === 'upload-form') {
+                document.querySelector('#upload-status').style.display = 'none';
+                document.querySelector('#upload-progress-bar').style.width = "0%";
+            }
+        });
+    </script>
+
+    <div class="workspace">
+        <div id="video-container" class="video-box">
+            <!-- Player will be loaded here -->
+            <div class="placeholder">
+                No video loaded
+            </div>
+        </div>
+
+        <div id="transcript-container" class="transcript-box">
+            <!-- Transcript will be loaded here -->
+            <div class="placeholder">
+                Transcription will appear here
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

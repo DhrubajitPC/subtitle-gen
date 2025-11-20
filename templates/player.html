@@ -1,0 +1,21 @@
+<div class="player-wrapper">
+    <video controls width="100%">
+        <source src="{{.VideoPath}}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="transcribe-action">
+        <form hx-post="/transcribe" hx-target="#transcript-container" hx-indicator="#transcribing">
+            <input type="hidden" name="videoPath" value="{{.LocalPath}}">
+            <button type="submit">Generate Subtitles</button>
+        </form>
+        <div id="transcribing" class="htmx-indicator" style="width: 100%; margin-top: 10px;">
+            <div class="progress-container show">
+                <div class="progress-bar-indeterminate"></div>
+            </div>
+            <div style="text-align: center; margin-top: 5px; font-size: 0.9rem; color: var(--text-secondary);">
+                Transcribing audio... (this may take a moment)
+            </div>
+        </div>
+    </div>
+</div>
