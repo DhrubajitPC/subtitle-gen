@@ -15,9 +15,11 @@ type TranscriptionResponse struct {
 	Text string `json:"text"`
 }
 
+var OpenAIEndpoint = "https://api.openai.com/v1/audio/transcriptions"
+
 // TranscribeAudio sends the audio file to OpenAI Whisper API.
 func TranscribeAudio(audioPath string, apiKey string) (string, error) {
-	url := "https://api.openai.com/v1/audio/transcriptions"
+	url := OpenAIEndpoint
 
 	// Open the file
 	file, err := os.Open(audioPath)
@@ -29,7 +31,7 @@ func TranscribeAudio(audioPath string, apiKey string) (string, error) {
 	// Create multipart writer
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	
+
 	// Add file field
 	part, err := writer.CreateFormFile("file", filepath.Base(audioPath))
 	if err != nil {

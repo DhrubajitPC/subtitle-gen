@@ -8,11 +8,13 @@ import (
 	"strings"
 )
 
+var execLookPath = exec.LookPath
+
 // TranscribeAudioLocal uses the local 'whisper' CLI tool to transcribe audio.
 func TranscribeAudioLocal(audioPath string) (string, error) {
 	// Check if whisper is installed
 	whisperCmd := "whisper"
-	if _, err := exec.LookPath(whisperCmd); err != nil {
+	if _, err := execLookPath(whisperCmd); err != nil {
 		// Fallback to common pip install location on Mac
 		fallbackPath := "/Users/dhch/Library/Python/3.9/bin/whisper"
 		if _, err := os.Stat(fallbackPath); err == nil {
@@ -31,7 +33,7 @@ func TranscribeAudioLocal(audioPath string) (string, error) {
 
 	// Construct command
 	// whisper <audioPath> --model base --output_format txt --output_dir <tempDir>
-	cmd := exec.Command(whisperCmd, audioPath, "--model", "base", "--output_format", "txt", "--output_dir", tempDir)
+	cmd := execCommand(whisperCmd, audioPath, "--model", "base", "--output_format", "txt", "--output_dir", tempDir)
 
 	// Capture output for debugging
 	output, err := cmd.CombinedOutput()
